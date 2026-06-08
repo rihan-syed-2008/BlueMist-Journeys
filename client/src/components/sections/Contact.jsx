@@ -132,8 +132,8 @@ export default function Contact() {
               {[
                 {
                   title: 'WhatsApp',
-                  value: '+91 82483 19282',
-                  href: 'https://wa.me/918248319282',
+                  value: '+91 72009 69889',
+                  href: 'https://wa.me/917200969889',
                   bg: '#25D366',
                 },
 
