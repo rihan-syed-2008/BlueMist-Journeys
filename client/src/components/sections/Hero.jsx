@@ -1,40 +1,42 @@
-import { useEffect, useState, useRef } from 'react'
+import { useRef } from 'react'
+import { HERO_CONFIG } from '../../utils/heroConfig'
+import useHeroReveal from '../../hooks/useHeroReveal'
+import Button from '../ui/Button'
 
 export default function Hero() {
-  const [scrollProgress, setScrollProgress] = useState(0)
   const sectionRef = useRef(null)
-  
+  const { scrollProgress, introComplete } = useHeroReveal(sectionRef)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      requestAnimationFrame(() => {
-        if (!sectionRef.current) return
-        const rect = sectionRef.current.getBoundingClientRect()
-        const sectionHeight =
-          sectionRef.current.offsetHeight - window.innerHeight
-        const scrolled = -rect.top
-        const progress = Math.min(Math.max(scrolled / sectionHeight, 0), 1)
-        setScrollProgress(progress)
-      })
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const mistOpacity = Math.max(0, 1 - scrollProgress / 0.5)
-  const contentOpacity = Math.max(0, (scrollProgress - 0.5) / 0.5)
-  const logoOpacity = Math.max(0, 1 - scrollProgress / 0.45)
+  const mistOpacity = introComplete
+  ? 0
+  : Math.max(
+      0,
+      1 - scrollProgress / HERO_CONFIG.revealStart
+    )
+  const contentOpacity = introComplete
+    ? 1
+    : Math.max(
+        0,
+        (scrollProgress - HERO_CONFIG.revealStart) /
+          (HERO_CONFIG.revealEnd - HERO_CONFIG.revealStart)
+      )
+  const logoOpacity = introComplete
+  ? 0
+  : Math.max(
+      0,
+      1 - scrollProgress / HERO_CONFIG.logoFadeEnd
+    )
 
   return (
     <>
       <section
         ref={sectionRef}
-        style={{ height: '150vh' }}
+        style={{ height: `${HERO_CONFIG.heroHeight}vh` }}
         className="relative"
       >
         <div
           className="sticky top-0 w-full overflow-hidden"
-          style={{ height: '105vh' }}
+          style={{ height: `${HERO_CONFIG.stickyHeight}vh` }}
         >
           {/* Background photo — covers full viewport including edges */}
           <div
@@ -46,8 +48,9 @@ export default function Hero() {
               bottom: '-5%',
               backgroundImage: 'url(/images/hero-bg.jpg)',
               backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              transform: `scale(${1 + scrollProgress * 0.08})`,
+              backgroundPosition: 'center center',
+              filter: 'saturate(0.92) contrast(1.05) brightness(0.88)',
+              transform: `scale(${1 + scrollProgress * HERO_CONFIG.parallaxScale})`,
             }}
           />
 
@@ -55,8 +58,28 @@ export default function Hero() {
           <div
             className="absolute inset-0 z-10"
             style={{
-              background:
-                'linear-gradient(to bottom, rgba(15,33,56,0.55) 0%, rgba(15,33,56,0.45) 50%, rgba(15,33,56,0.3) 100%)',
+              background: `
+              linear-gradient(
+                to bottom,
+                rgba(8,15,28,0.72) 0%,
+                rgba(15,33,56,0.38) 28%,
+                rgba(15,33,56,0.18) 55%,
+                rgba(8,15,28,0.62) 100%
+              )
+            `,
+            }}
+          />
+
+          <div
+            className="absolute inset-0 z-10 pointer-events-none"
+            style={{
+              background: `
+              radial-gradient(
+                ellipse at center,
+                transparent 42%,
+                rgba(0,0,0,0.18) 100%
+              )
+            `,
             }}
           />
 
@@ -68,7 +91,7 @@ export default function Hero() {
               left: '-10%',
               right: '-10%',
               bottom: '-10%',
-              opacity: mistOpacity,
+              opacity: introComplete ? 0 : mistOpacity,
               background: `
                 radial-gradient(ellipse 130% 70% at 50% 40%, rgba(255,255,255,0.92) 0%, transparent 55%),
                 radial-gradient(ellipse 90% 50% at 20% 60%, rgba(200,220,230,0.75) 0%, transparent 55%),
@@ -88,7 +111,7 @@ export default function Hero() {
               left: '-10%',
               right: '-10%',
               bottom: '-10%',
-              opacity: mistOpacity,
+              opacity: introComplete ? 0 : mistOpacity,
               background: `
                 linear-gradient(to top, rgba(15,33,56,0.6) 0%, rgba(15,33,56,0.2) 20%, transparent 45%),
                 linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.4) 35%, transparent 60%),
@@ -117,9 +140,31 @@ export default function Hero() {
             />
           </div>
 
+          {/* Top Floating Logo */}
+          <div
+            className="absolute top-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-500"
+            style={{
+              opacity: scrollProgress < 0.12 && introComplete ? 1 : 0,
+
+              transform: `
+      translateX(-50%)
+      translateY(${scrollProgress < 0.12 ? '0px' : '-10px'})
+    `,
+            }}
+          >
+            <img
+              src="/logos/bluemist-dark.png"
+              alt="BlueMist Journeys"
+              style={{
+                width: '245px',
+                opacity: 0.99,
+              }}
+            />
+          </div>
+
           {/* Hero Content */}
           <div
-            className="absolute inset-0 z-30 flex items-center justify-center"
+            className="absolute inset-0 z-30 flex items-center justify-center pt-24 md:pt-32"
             style={{
               opacity: contentOpacity,
               transform: `translateY(${(1 - contentOpacity) * 30}px)`,
@@ -127,33 +172,22 @@ export default function Hero() {
             }}
           >
             <div className="text-center px-6 max-w-5xl mx-auto">
-              <p
-                className="text-xs tracking-[0.4em] uppercase mt-16 mb-8"
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  color: 'var(--teal)',
-                }}
-              >
-                Coonoor · Ooty · Kotagiri · Masinagudi
-              </p>
-
               <h1
-                className="mb-10 leading-tight"
+                className="font-serif italic mb-6 leading-[1] text-white font-light"
                 style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 'clamp(2rem, 5vw, 4.5rem)',
-                  fontWeight: 300,
-                  color: 'white',
-                  textShadow: '0 2px 40px rgba(0,0,0,0.3)',
+                  fontSize: 'clamp(2.6rem, 5vw, 5rem)',
+                  textShadow: '0 2px 40px rgba(0,0,0,0.35)',
                 }}
               >
                 The Nilgiris
                 <br />
                 <span
+                  className="block mt-1 font-serif italic"
                   style={{
-                    color: 'rgba(255,255,255,0.75)',
-                    fontStyle: 'italic',
+                    color: 'rgba(91,192,190,0.92)',
+                    fontSize: '0.72em',
                     fontWeight: 300,
+                    letterSpacing: '0.01em',
                   }}
                 >
                   The way locals know it
@@ -161,46 +195,50 @@ export default function Hero() {
               </h1>
 
               <p
-                className="mb-10 font-light max-w-xl mx-auto"
+                className="uppercase mb-12 mt-12"
                 style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
-                  color: 'rgba(255,255,255,0.85)',
-                  lineHeight: 1.8,
-                  textShadow: '0 1px 20px rgba(0,0,0,1)',
+                  color: 'rgba(255,255,255,0.99)',
+                  fontSize: '0.68rem',
+                  letterSpacing: '0.42em',
+                  fontWeight: 500,
+                }}
+              >
+                COONOOR · OOTY · KOTAGIRI · MASINAGUDI
+              </p>
+
+              <p
+                className="font-sans mb-10 max-w-xl mx-auto text-white/85"
+                style={{
+                  fontSize: 'clamp(0.92rem, 1vw, 1rem)',
+                  lineHeight: 1.9,
+                  fontWeight: 300,
+                  textShadow: '0 2px 30px rgba(0,0,0,0.55)',
                 }}
               >
                 Private cab tours, curated packages, and local expertise across
                 the Nilgiris. Trusted by travellers since day one.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
+              <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+                <Button
+                  variant="primary"
                   onClick={() => {
                     const el = document.getElementById('custom')
                     if (el) el.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="px-8 py-4 text-sm tracking-widest uppercase font-light text-white transition-all duration-300 hover:opacity-80 hover:scale-105"
-                  style={{ backgroundColor: 'var(--teal)' }}
                 >
                   Plan Your Journey
-                </button>
-                <button
+                </Button>
+
+                <Button
+                  variant="secondary"
                   onClick={() => {
                     const el = document.getElementById('packages')
                     if (el) el.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="px-8 py-4 text-sm tracking-widest uppercase font-light transition-all duration-300 hover:opacity-80 hover:scale-105"
-                  style={{
-                    color: 'white',
-                    border: '2px solid rgba(255,255,255,0.6)',
-                    backdropFilter: 'blur(4px)',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                  }}
                 >
                   View Packages
-                </button>
+                </Button>
               </div>
             </div>
           </div>

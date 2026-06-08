@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { navigateToSection } from '../utils/scrollTo'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 export default function Navbar() {
   const isDetailPage = window.location.pathname.includes('package')
@@ -9,18 +8,9 @@ export default function Navbar() {
   const [heroDone, setHeroDone] = useState(false)
 
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleNavClick = (link) => {
-    if (link === 'Explore') {
-      navigate('/explore')
-      if (isDetailPage) {
-  navigateToSection(navigate, section)
-} else {
-  const el = document.getElementById(section)
-  if (el) el.scrollIntoView({ behavior: 'smooth' })
-}
-      return
-    }
     const section = link === 'Custom' ? 'custom' : link.toLowerCase()
     if (isDetailPage) {
       navigate('/')
@@ -37,14 +27,26 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const onDetailPage = window.location.pathname.includes('package')
+
       setScrolled(window.scrollY > 50)
+
       setHeroDone(onDetailPage || window.scrollY > window.innerHeight * 0.3)
     }
-    handleScroll()
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
+    handleScroll()
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [location.pathname])
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
   const links = ['Packages', 'Custom', 'Fleet', 'About', 'Contact']
 
   return (
@@ -60,18 +62,23 @@ export default function Navbar() {
           : 'bg-transparent py-4'
       }`}
     >
-      <div className="w-full px-10 flex items-center justify-between">
+      <div className="w-full px-5 md:px-10 flex items-center justify-between">
         {/* Logo */}
         <a href="/" className="flex items-center gap-3">
           <img
             src={
               isDetailPage
-                ? '/logos/bluemist-dark.png'
+                ? '/logos/bluemist-dark-nav.png'
                 : '/logos/bluemist-light-nav.png'
             }
             alt="BlueMist Journeys"
-            className="transition-all duration-500"
-            style={{ height: scrolled ? '48px' : '56px', width: 'auto' }}
+            className="
+    h-10
+    md:h-14
+    transition-all
+    duration-500
+    w-auto
+  "
           />
         </a>
 
@@ -91,27 +98,6 @@ export default function Navbar() {
               {link}
             </button>
           ))}
-
-          {/* CTA Button */}
-          <a
-            href="/explore"
-            className="px-6 py-3 text-xs tracking-[0.2em] uppercase font-light text-white transition-all duration-300"
-            style={{
-              backgroundColor: 'var(--teal)',
-              borderRadius: '2px',
-              boxShadow: '0 0 0 0 rgba(91,192,190,0)',
-              transition: 'all 0.3s ease',
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.boxShadow =
-                '0 0 20px rgba(91,192,190,0.4)')
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.boxShadow = '0 0 0 0 rgba(91,192,190,0)')
-            }
-          >
-            Explore the Nilgiris
-          </a>
         </div>
 
         {/* Mobile Hamburger */}
@@ -120,16 +106,26 @@ export default function Navbar() {
           onClick={() => setMenuOpen(!menuOpen)}
         >
           <span
-            className={`block h-px w-6 transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}
-            style={{ backgroundColor: 'var(--navy)' }}
+            className={`block h-px w-6 transition-all duration-300 ${
+              menuOpen ? 'rotate-45 translate-y-[7px]' : ''
+            }`}
+            style={{
+              backgroundColor: isDetailPage ? 'white' : 'var(--navy)',
+            }}
           />
           <span
             className={`block h-px w-6 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}
-            style={{ backgroundColor: 'var(--navy)' }}
+            style={{
+              backgroundColor: isDetailPage ? 'white' : 'var(--navy)',
+            }}
           />
           <span
-            className={`block h-px w-6 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}
-            style={{ backgroundColor: 'var(--navy)' }}
+            className={`block h-px w-6 transition-all duration-300 ${
+              menuOpen ? '-rotate-45 -translate-y-[7px]' : ''
+            }`}
+            style={{
+              backgroundColor: isDetailPage ? 'white' : 'var(--navy)',
+            }}
           />
         </button>
       </div>
@@ -152,7 +148,6 @@ export default function Navbar() {
               {link}
             </button>
           ))}
-          <a href="/explore">Explore the Nilgiris</a>
         </div>
       </div>
     </nav>

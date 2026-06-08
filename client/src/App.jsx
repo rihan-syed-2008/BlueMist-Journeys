@@ -1,16 +1,10 @@
 import { Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Packages from './components/Packages'
-import PackageDetail from './components/PackageDetail'
-import CustomBuilder from './components/CustomBuilder'
-import Fleet from './components/Fleet'
-import About from './components/About'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
+import Navbar from './components/layout/Navbar'
 import Explore from './pages/Explore'
 import ExploreDestination from './pages/ExploreDestination'
 import AllPackages from './pages/AllPackages'
+import PackageDetail from './pages/PackageDetail'
+import Home from './pages/Home'
 
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
@@ -48,20 +42,7 @@ function App() {
       <Navbar />
       <ScrollToHash />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Hero />
-              <Packages />
-              <CustomBuilder />
-              <Fleet />
-              <About />
-              <Contact />
-              <Footer />
-            </>
-          }
-        />
+        <Route path="/" element={<Home />} />
         <Route path="/package/:id" element={<PackageDetail />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/explore/:id" element={<ExploreDestination />} />
