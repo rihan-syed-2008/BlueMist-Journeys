@@ -8,6 +8,21 @@ import Home from './pages/Home'
 
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import ReactGA from 'react-ga4'
+
+
+function AnalyticsTracker() {
+  const location = useLocation()
+
+  useEffect(() => {
+    ReactGA.send({
+      hitType: 'pageview',
+      page: location.pathname + location.search,
+    })
+  }, [location])
+
+  return null
+}
 
 function ScrollToHash() {
   const location = useLocation()
@@ -41,6 +56,7 @@ function App() {
     <div>
       <Navbar />
       <ScrollToHash />
+      <AnalyticsTracker />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/package/:id" element={<PackageDetail />} />
