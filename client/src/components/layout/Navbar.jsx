@@ -2,35 +2,21 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 export default function Navbar() {
-  const isDetailPage = window.location.pathname.includes('package')
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const isDetailPage = location.pathname.includes('/package/')
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [heroDone, setHeroDone] = useState(false)
 
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  const handleNavClick = (link) => {
-    const section = link === 'Custom' ? 'custom' : link.toLowerCase()
-    if (isDetailPage) {
-      navigate('/')
-      setTimeout(() => {
-        const el = document.getElementById(section)
-        if (el) el.scrollIntoView({ behavior: 'smooth' })
-      }, 800)
-    } else {
-      const el = document.getElementById(section)
-      if (el) el.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
   useEffect(() => {
     const handleScroll = () => {
-      const onDetailPage = window.location.pathname.includes('package')
+      const isHome = location.pathname === '/'
 
       setScrolled(window.scrollY > 50)
 
-      setHeroDone(onDetailPage || window.scrollY > window.innerHeight * 0.3)
+      setHeroDone(!isHome || window.scrollY > window.innerHeight * 0.3)
     }
 
     handleScroll()
@@ -47,18 +33,24 @@ export default function Navbar() {
       document.body.style.overflow = ''
     }
   }, [menuOpen])
-  const links = ['Packages', 'Custom', 'Fleet', 'About', 'Contact']
+  const links = [
+    { label: 'Transfers', path: '/transfers' },
+    { label: 'Journeys', path: '/journeys' },
+    { label: 'Explore', path: '/explore' },
+    { label: 'Plan My Trip', path: '/custom-trip' },
+  ]
 
   return (
+    <>
     <nav
       style={{
         opacity: heroDone ? 1 : 0,
         pointerEvents: heroDone ? 'auto' : 'none',
         transition: 'opacity 0.5s ease',
       }}
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+      className={`fixed top-0 w-full z-[110] transition-all duration-500 ${
         scrolled || isDetailPage
-          ? `${isDetailPage ? 'bg-[#1E3A5F]' : 'bg-white/90 backdrop-blur-md'} shadow-sm py-3`
+          ? `${isDetailPage ? 'bg-[#1E3A5F]' : 'bg-white/90 backdrop-blur-md'} shadow-sm py-4`
           : 'bg-transparent py-4'
       }`}
     >
@@ -83,22 +75,53 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-10 ml-auto">
-          {links.map((link) => (
-            <button
-              key={link}
-              onClick={() => handleNavClick(link)}
-              className="text-xs tracking-[0.2em] uppercase font-light transition-colors duration-300"
-              style={{ color: isDetailPage ? 'white' : 'var(--navy)' }}
-              onMouseEnter={(e) => (e.target.style.color = 'var(--teal)')}
-              onMouseLeave={(e) =>
-                (e.target.style.color = isDetailPage ? 'white' : 'var(--navy)')
-              }
-            >
-              {link}
-            </button>
-          ))}
+        <div className="hidden md:flex items-center gap-3 px-1 ml-auto">
+          {links.map((link) => {
+            const isActive =
+              link.path === '/explore'
+                ? location.pathname.startsWith('/explore')
+                : location.pathname === link.path
+
+            return (
+              <button
+                key={link.label}
+                onClick={() => navigate(link.path)}
+                className={`
+        px-4 py-2 rounded-full
+        text-xs tracking-[0.18em] uppercase font-light
+        transition-all duration-300
+
+        ${
+          isActive
+            ? 'bg-[#5BC0BE] text-white shadow-sm'
+            : 'text-[var(--navy)] hover:bg-[#1E3A5F]/10'
+        }
+      `}
+              >
+                {link.label}
+              </button>
+            )
+          })}
         </div>
+        <a
+          href="https://wa.me/917200969889"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+hidden md:flex
+items-center
+px-6 py-2.5
+rounded-full
+border border-[#5BC0BE]
+text-[#5BC0BE]
+hover:bg-[#5BC0BE]
+hover:text-white
+transition-all duration-300
+text-xs tracking-[0.18em] uppercase
+"
+        >
+          WhatsApp
+        </a>
 
         {/* Mobile Hamburger */}
         <button
@@ -129,27 +152,82 @@ export default function Navbar() {
           />
         </button>
       </div>
-
-      {/* Mobile Menu */}
+    </nav>
+    {/* Mobile Navigation Overlay */}
       <div
-        className={`md:hidden transition-all duration-500 overflow-hidden ${menuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}
+        className={`
+    md:hidden
+    fixed inset-0 z-[100]
+    bg-[#F8F6F2]
+    transition-all duration-500
+    ${
+      menuOpen
+        ? 'opacity-100 pointer-events-auto'
+        : 'opacity-0 pointer-events-none'
+    }
+  `}
       >
-        <div className="bg-white/95 backdrop-blur-md px-6 py-6 flex flex-col gap-6">
-          {links.map((link) => (
-            <button
-              key={link}
-              onClick={() => {
-                handleNavClick(link)
-                setMenuOpen(false)
-              }}
-              className="text-sm tracking-widest uppercase font-light"
-              style={{ color: 'var(--navy)' }}
-            >
-              {link}
-            </button>
-          ))}
+
+        {/* Navigation */}
+        <div className="flex flex-col items-center justify-center h-[75vh]">
+          <div className="flex flex-col items-center gap-8">
+            {links.map((link) => {
+              const isActive =
+                link.path === '/explore'
+                  ? location.pathname.startsWith('/explore')
+                  : location.pathname === link.path
+
+              return (
+                <button
+                  key={link.label}
+                  onClick={() => {
+                    navigate(link.path)
+                    setMenuOpen(false)
+                  }}
+                  className={`
+              text-lg
+              tracking-[0.25em]
+              uppercase
+              transition-all
+              duration-300
+              relative
+
+              ${isActive ? 'text-[#5BC0BE]' : 'text-[var(--navy)]'}
+            `}
+                >
+                  {link.label}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Divider */}
+          <div className="w-12 h-px bg-[#1E3A5F]/20 my-10" />
+
+          {/* WhatsApp */}
+          <a
+            href="https://wa.me/917200969889"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+        px-8 py-3
+        rounded-full
+        border
+        border-[#5BC0BE]
+        text-[#5BC0BE]
+        text-sm
+        tracking-[0.18em]
+        uppercase
+        transition-all
+        duration-300
+        hover:bg-[#5BC0BE]
+        hover:text-white
+      "
+          >
+            WhatsApp
+          </a>
         </div>
       </div>
-    </nav>
+    </>
   )
 }

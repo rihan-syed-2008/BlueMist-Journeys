@@ -5,7 +5,7 @@ import Footer from '../components/layout/Footer'
 import PackageCard from '../components/package/PackageCard'
 import { useNavigate } from 'react-router-dom'
 
-export default function AllPackages() {
+export default function Journeys() {
   const [visible, setVisible] = useState(false)
   const navigate = useNavigate()
 

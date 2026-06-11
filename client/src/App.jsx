@@ -2,14 +2,18 @@ import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Explore from './pages/Explore'
 import ExploreDestination from './pages/ExploreDestination'
-import AllPackages from './pages/AllPackages'
+import Journeys from './pages/Journeys'
 import PackageDetail from './pages/PackageDetail'
 import Home from './pages/Home'
+
+import Transfers from './pages/Transfers'
+import CustomTrip from './pages/CustomTrip'
+import About from './pages/About'
+import Contact from './pages/Contact'
 
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import ReactGA from 'react-ga4'
-
 
 function AnalyticsTracker() {
   const location = useLocation()
@@ -62,7 +66,11 @@ function App() {
         <Route path="/package/:id" element={<PackageDetail />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/explore/:id" element={<ExploreDestination />} />
-        <Route path="/packages" element={<AllPackages />} />
+        <Route path="/journeys" element={<Journeys />} />
+        <Route path="/transfers" element={<Transfers />} />
+        <Route path="/custom-trip" element={<CustomTrip />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </div>
   )
