@@ -203,7 +203,7 @@ export default function Hero() {
                   fontWeight: 500,
                 }}
               >
-                COONOOR · OOTY · KOTAGIRI · MASINAGUDI
+                COONOOR · OOTY · KOTAGIRI · MUDUMALAI
               </p>
 
               <p
