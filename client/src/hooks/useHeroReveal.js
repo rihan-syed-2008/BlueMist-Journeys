@@ -7,6 +7,26 @@ export default function useHeroReveal(sectionRef) {
     return sessionStorage.getItem('bluemist-intro-complete') === 'true'
   })
 
+  const [introFading, setIntroFading] = useState(false)
+
+useEffect(() => {
+  if (introComplete) return
+
+  const fadeTimer = setTimeout(() => {
+    setIntroFading(true)
+  }, 800)
+
+  const completeTimer = setTimeout(() => {
+    sessionStorage.setItem('bluemist-intro-complete', 'true')
+    setIntroComplete(true)
+  }, 1800)
+
+  return () => {
+    clearTimeout(fadeTimer)
+    clearTimeout(completeTimer)
+  }
+}, [introComplete])
+
   useEffect(() => {
     const handleScroll = () => {
       requestAnimationFrame(() => {
@@ -41,5 +61,6 @@ export default function useHeroReveal(sectionRef) {
   return {
     scrollProgress,
     introComplete,
+    introFading
   }
 }

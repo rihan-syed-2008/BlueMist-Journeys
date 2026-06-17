@@ -5,27 +5,12 @@ import Button from '../ui/Button'
 
 export default function Hero() {
   const sectionRef = useRef(null)
-  const { scrollProgress, introComplete } = useHeroReveal(sectionRef)
+  const { scrollProgress, introComplete, introFading } =
+    useHeroReveal(sectionRef)
 
-  const mistOpacity = introComplete
-  ? 0
-  : Math.max(
-      0,
-      1 - scrollProgress / HERO_CONFIG.revealStart
-    )
-  const contentOpacity = introComplete
-    ? 1
-    : Math.max(
-        0,
-        (scrollProgress - HERO_CONFIG.revealStart) /
-          (HERO_CONFIG.revealEnd - HERO_CONFIG.revealStart)
-      )
-  const logoOpacity = introComplete
-  ? 0
-  : Math.max(
-      0,
-      1 - scrollProgress / HERO_CONFIG.logoFadeEnd
-    )
+  const mistOpacity = introComplete ? 0 : introFading ? 0 : 1
+  const contentOpacity = introComplete ? 1 : 0
+  const logoOpacity = introFading ? 0 : 1
 
   return (
     <>
@@ -100,6 +85,7 @@ export default function Hero() {
                 radial-gradient(ellipse 60% 40% at 100% 50%, rgba(220,230,240,0.8) 0%, transparent 50%)
               `,
               animation: 'mistFloat 8s ease-in-out infinite alternate',
+              transition: 'opacity 1.75s ease-out',
             }}
           />
 
@@ -119,6 +105,7 @@ export default function Hero() {
                 linear-gradient(to left, rgba(255,255,255,0.7) 0%, transparent 25%)
               `,
               animation: 'mistFloat 6s ease-in-out infinite alternate',
+              transition: 'opacity 1.75s ease-out',
             }}
           />
 
@@ -130,7 +117,7 @@ export default function Hero() {
               left: '50%',
               transform: 'translate(-50%, -50%)',
               opacity: logoOpacity,
-              transition: 'opacity 0.05s linear',
+              transition: 'opacity 1.75s ease-out',
             }}
           >
             <img
