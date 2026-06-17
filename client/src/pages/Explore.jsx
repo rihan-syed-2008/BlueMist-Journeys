@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { destinations } from '../data/explore'
+//import { useNavigate } from 'react-router-dom'
+//import { destinations } from '../data/explore'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 
 export default function Explore() {
   const [visible, setVisible] = useState(false)
-  const navigate = useNavigate()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -21,7 +20,10 @@ export default function Explore() {
       {/* Header */}
       <div
         className="pt-32 pb-16 px-6 text-center transition-all duration-1000"
-        style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(20px)' }}
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'translateY(0)' : 'translateY(20px)',
+        }}
       >
         <p
           className="text-xs tracking-[0.4em] uppercase mb-4"
@@ -49,12 +51,13 @@ export default function Explore() {
             lineHeight: 1.8,
           }}
         >
-          Four destinations. Each with its own personality.
-          All connected by roads only locals know.
+          Four destinations. Each with its own personality. All connected by
+          roads only locals know.
         </p>
       </div>
 
-      {/* Destination Grid */}
+      {/*
+      
       <div
         className="max-w-6xl mx-auto px-6 pb-24 grid grid-cols-1 md:grid-cols-2 gap-8 transition-all duration-1000"
         style={{ opacity: visible ? 1 : 0, transitionDelay: '0.2s' }}
@@ -65,7 +68,7 @@ export default function Explore() {
             className="group cursor-pointer"
             onClick={() => navigate(`/explore/${dest.id}`)}
           >
-            {/* Image */}
+            
             <div className="overflow-hidden" style={{ height: '300px' }}>
               <img
                 src={dest.image}
@@ -74,7 +77,7 @@ export default function Explore() {
               />
             </div>
 
-            {/* Card content */}
+            
             <div
               className="p-8 transition-all duration-300"
               style={{ backgroundColor: 'var(--navy)' }}
@@ -116,6 +119,63 @@ export default function Explore() {
             </div>
           </div>
         ))}
+      </div>*/}
+
+      <div
+        className="max-w-4xl mx-auto px-6 pb-24"
+        style={{
+          opacity: visible ? 1 : 0,
+          transitionDelay: '0.2s',
+        }}
+      >
+        <div
+          className="
+      rounded-[28px]
+      p-10 md:p-14
+      text-center
+    "
+          style={{
+            background: 'linear-gradient(180deg, #24476f 0%, #1d3656 100%)',
+          }}
+        >
+          <p
+            className="mb-4"
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: '0.72rem',
+              letterSpacing: '0.28em',
+              textTransform: 'uppercase',
+              color: 'rgba(91,192,190,0.9)',
+            }}
+          >
+            CURRENTLY IN DEVELOPMENT
+          </p>
+
+          <h2
+            className="mb-5"
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(2rem,4vw,3rem)',
+              color: 'white',
+              fontWeight: 300,
+            }}
+          >
+            The Nilgiris Journal
+          </h2>
+
+          <p
+            className="mx-auto"
+            style={{
+              maxWidth: '38rem',
+              fontFamily: "'DM Sans', sans-serif",
+              color: 'rgba(255,255,255,0.7)',
+              lineHeight: 1.8,
+            }}
+          >
+            We're currently curating destination guides, local insights, hidden
+            viewpoints, tea estates and travel stories from across the Nilgiris.
+          </p>
+        </div>
       </div>
 
       <Footer />

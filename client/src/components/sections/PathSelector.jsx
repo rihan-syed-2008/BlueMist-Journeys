@@ -5,24 +5,24 @@ export default function PathSelector() {
 
   const paths = [
     {
-      head: 'Pickup/Drop',
-      title: 'Arriving In The Hills',
+      head: 'Arriving In The Hills',
+      title: 'Pickup/Drop',
       description:
         'Airport transfers, railway pickups and seamless intercity travels.',
       image: '/images/nilgiris-3.jpg',
       route: '/transfers',
     },
     {
-      head: 'Packages',
-      title: 'Curated Escapes',
+      head: 'Curated Escapes',
+      title: 'Packages',
       description:
         'Handcrafted journeys designed around the landscapes, culture and rhythm of the hills.',
       image: '/images/masinagudi.jpg',
       route: '/journeys',
     },
     {
-      head: 'AI Planner',
-      title: 'A Journey Of Your Own',
+      head: 'A Journey Of Your Own',
+      title: 'Custom Builder',
       description:
         "Tell us how you'd like to travel and our AI will craft an itinerary around it.",
       image: '/images/coonoor.jpg',
@@ -41,15 +41,18 @@ export default function PathSelector() {
   return (
     <section
       className="
-        py-16 md:py-20
-        bg-gradient-to-b
-        from-[#152C47]
-        via-[#1E3A5F]
-        to-[#243F62]
+        relative
+    overflow-hidden
+    py-16 md:py-20
+    bg-gradient-to-b
+    from-[#152C47]
+    via-[#1E3A5F]
+    to-[#243F62]
       "
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         {/* Heading */}
+
         <div className="text-center mb-10 md:mb-12">
           <h2
             className="
@@ -76,6 +79,7 @@ export default function PathSelector() {
           >
             Transfers, curated journeys, bespoke itineraries and online journals
           </p>
+          
         </div>
 
         {/* Grid */}

@@ -115,6 +115,62 @@ md:self-auto
               visible={visible}
             />
           ))}
+          <div
+            className="
+    rounded-[22px]
+    overflow-hidden
+    flex
+    items-center
+    justify-center
+    min-h-[420px]
+    border
+    border-dashed
+    border-[#1E3A5F]/15
+  "
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(36,71,111,0.04) 0%, rgba(30,58,95,0.08) 100%)',
+            }}
+          >
+            <div className="text-center px-8">
+              <p
+                className="mb-4"
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: '0.72rem',
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(91,192,190,0.9)',
+                }}
+              >
+                CURRENTLY EXPANDING
+              </p>
+
+              <h3
+                className="mb-4"
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: '2rem',
+                  color: 'var(--navy)',
+                  fontWeight: 300,
+                }}
+              >
+                More Journeys Are Being Crafted
+              </h3>
+
+              <p
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  color: 'rgba(30,58,95,0.55)',
+                  lineHeight: 1.8,
+                  maxWidth: '28rem',
+                }}
+              >
+                We are continually adding new experiences across Ooty, Coonoor,
+                Kotagiri and the hidden corners of the Nilgiris.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
